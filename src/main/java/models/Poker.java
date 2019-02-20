@@ -5,12 +5,18 @@ public class Poker {
     private Map deck = new HashMap();
     private List cardKeys = new ArrayList<String>();
 
-    constructor() {
+    public Poker() {
         this.buildDeck();
     }
 
     private int randomNumber() {
         return (int)(Math.random() * cardKeys.size()) + 1;
+    }
+
+    public String dealCard() {
+        String cardKey = cardKeys.get(randomNumber()).toString();
+        cardKeys.remove(cardKey);
+        return cardKey;
     }
 
     private void buildDeck() {
