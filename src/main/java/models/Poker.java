@@ -10,13 +10,25 @@ public class Poker {
     }
 
     private int randomNumber() {
-        return (int)(Math.random() * cardKeys.size()) + 1;
+        return (int)(Math.random() * (cardKeys.size()));
     }
 
     public String dealCard() {
         String cardKey = cardKeys.get(randomNumber()).toString();
         cardKeys.remove(cardKey);
         return cardKey;
+    }
+
+    public String getCardValue(String key) {
+        return this.deck.get(key).toString();
+    }
+
+    public String getHandValue(List<String> hand){
+        String handValue = "";
+        for(String card : hand) {
+            handValue += (this.getCardValue(card) + ", ");
+        }
+        return handValue;
     }
 
     private void buildDeck() {
