@@ -31,6 +31,40 @@ public class Poker {
         return handValue;
     }
 
+    public String evaluateHand(List<String> hand) {
+        List<String> suits = new ArrayList<String>();
+        List<String> numbers = new ArrayList<String>();
+        for (String card : hand){
+            String[] cardSplit = card.split("-");
+            suits.add(cardSplit[0]);
+            numbers.add(cardSplit[1]);
+        }
+        Map<String,Integer> numberCounts = getNumberCounts(numbers);
+
+
+
+        }
+
+    private boolean checkStraight(List<String> numbers) {
+
+    }
+
+    private Map<String,Integer> getNumberCounts(List<String> numbers) {
+        Map<String, Integer> counts = new HashMap<>();
+        for (int i = 0; i < 5; i++) {
+            if (!counts.containsKey(numbers.get(i))) {
+                int numberCount = 1;
+                for (int x = i+1; x < 5; x++) {
+                    if (numbers.get(i) == numbers.get(x)) {
+                        numberCount ++;
+                    }
+                }
+                counts.put(numbers.get(i), numberCount);
+            }
+        }
+        return counts;
+    }
+
     private void buildDeck() {
         Map<String, String> suits = new HashMap<String,String>();
         suits.put("H","Hearts");
