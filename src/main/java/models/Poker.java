@@ -31,22 +31,64 @@ public class Poker {
         return handValue;
     }
 
-    public String evaluateHand(List<String> hand) {
+    public int evaluateHand(List<String> hand) {
+        System.out.println(hand);
         List<String> suits = new ArrayList<String>();
         List<String> numbers = new ArrayList<String>();
         for (String card : hand){
-            String[] cardSplit = card.split("-");
-            suits.add(cardSplit[0]);
-            numbers.add(cardSplit[1]);
+            String[] cardSplit = card.split("");
+            suits.add(cardSplit[1]);
+            numbers.add(cardSplit[0]);
         }
         Map<String,Integer> numberCounts = getNumberCounts(numbers);
-
-
-
+        Integer pairCount = 0;
+        for(String key : numberCounts.keySet()) {
+            if(numberCounts.get(key) == 2) {
+                pairCount ++;
+            }
+        }
+        boolean hasTriple = numberCounts.containsValue(3);
+        boolean hasQuad = numberCounts.containsValue(4);
+        int handRank = 1;
+        if(hasQuad){
+            handRank = 8;
+        } else if (hasTriple && pairCount == 1) {
+            handRank = 7;
+        } else if (hasTriple) {
+            handRank=4;
+        } else if (pairCount == 2) {
+            handRank=3;
+        } else if (pairCount == 1) {
+            handRank=2;
+        } else {
+            boolean hasStraight = checkStraight(numbers);
+            boolean hasFlush = checkFlush(suits);
+            if (hasStraight && hasFlush) {
+                handRank = 9;
+            } else if (hasFlush) {
+                handRank= 6;
+            } else if (hasStraight){
+                handRank = 5;
+            }
+        }
+        return handRank;
         }
 
     private boolean checkStraight(List<String> numbers) {
+        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "1", "J", "Q", "K", "A"};
+        for (int i = 0; i < 10; i++) {
+            if (numbers.contains(ranks[i]) && numbers.contains(ranks[i+1]) && numbers.contains(ranks[i+2]) && numbers.contains(ranks[i+3]) && numbers.contains(ranks[i+4])) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private boolean checkFlush(List<String> suits) {
+        if (suits.get(0) == suits.get(1) && suits.get(0) == suits.get(2) && suits.get(0) == suits.get(3) && suits.get(0) == suits.get(4) ) {
+            return true;
+        }
+        return false;
     }
 
     private Map<String,Integer> getNumberCounts(List<String> numbers) {
@@ -55,7 +97,7 @@ public class Poker {
             if (!counts.containsKey(numbers.get(i))) {
                 int numberCount = 1;
                 for (int x = i+1; x < 5; x++) {
-                    if (numbers.get(i) == numbers.get(x)) {
+                    if (numbers.get(i).equals(numbers.get(x))) {
                         numberCount ++;
                     }
                 }

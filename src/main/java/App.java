@@ -15,10 +15,15 @@ public class App {
             hand2.add(poker.dealCard());
         }
         System.out.println("Hand 1:");
+
         System.out.println(poker.getHandValue(hand1));
         System.out.println("Hand 2:");
         System.out.println(poker.getHandValue(hand2));
 
+        System.out.println("Hand 1:");
+        System.out.println(poker.evaluateHand(hand1));
+        System.out.println("Hand 2:");
+        System.out.println(poker.evaluateHand(hand2));
 
 
     }
