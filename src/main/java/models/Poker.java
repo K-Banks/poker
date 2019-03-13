@@ -4,6 +4,9 @@ import java.util.*;
 public class Poker {
     private Map deck = new HashMap();
     private List cardKeys = new ArrayList<String>();
+    private String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "1", "J", "Q", "K", "A"};
+    public int hand1HighValue = 0;
+    public int hand2HighValue = 0;
 
     public Poker() {
         this.buildDeck();
@@ -31,10 +34,10 @@ public class Poker {
         return handValue;
     }
 
-    public int evaluateHand(List<String> hand) {
-        System.out.println(hand);
+    public int evaluateHand(List<String> hand, int handNumber) {
         List<String> suits = new ArrayList<String>();
         List<String> numbers = new ArrayList<String>();
+        int highValue = 0;
         for (String card : hand){
             String[] cardSplit = card.split("");
             suits.add(cardSplit[1]);
@@ -42,13 +45,29 @@ public class Poker {
         }
         Map<String,Integer> numberCounts = getNumberCounts(numbers);
         Integer pairCount = 0;
+        boolean hasTriple = numberCounts.containsValue(3);
+        boolean hasQuad = numberCounts.containsValue(4);
         for(String key : numberCounts.keySet()) {
             if(numberCounts.get(key) == 2) {
                 pairCount ++;
+                if (highValue < this.getIndexOfRank(key)) {
+                    highValue = this.getIndexOfRank(key);
+                }
+            } else if (numberCounts.get(key) == 3){
+                highValue = this.getIndexOfRank(key);
+            } else if (numberCounts.get(key) == 4){
+                highValue = this.getIndexOfRank(key);
             }
         }
-        boolean hasTriple = numberCounts.containsValue(3);
-        boolean hasQuad = numberCounts.containsValue(4);
+
+        if (!hasTriple && !hasQuad && pairCount == 0) {
+            for (String number : numbers) {
+                if (highValue < this.getIndexOfRank(number)) {
+                    highValue = this.getIndexOfRank(number);
+                }
+            }
+        }
+
         int handRank = 1;
         if(hasQuad){
             handRank = 8;
@@ -71,11 +90,15 @@ public class Poker {
                 handRank = 5;
             }
         }
+        if( handNumber == 1 ) {
+            this.hand1HighValue = highValue;
+        } else {
+            this.hand2HighValue = highValue;
+        }
         return handRank;
         }
 
     private boolean checkStraight(List<String> numbers) {
-        String[] ranks = {"A", "2", "3", "4", "5", "6", "7", "8", "9", "1", "J", "Q", "K", "A"};
         for (int i = 0; i < 10; i++) {
             if (numbers.contains(ranks[i]) && numbers.contains(ranks[i+1]) && numbers.contains(ranks[i+2]) && numbers.contains(ranks[i+3]) && numbers.contains(ranks[i+4])) {
                 return true;
@@ -85,10 +108,12 @@ public class Poker {
     }
 
     private boolean checkFlush(List<String> suits) {
-        if (suits.get(0) == suits.get(1) && suits.get(0) == suits.get(2) && suits.get(0) == suits.get(3) && suits.get(0) == suits.get(4) ) {
-            return true;
+        for(int i = 1; i<5; i++) {
+            if(!suits.get(0).equals(suits.get(i))) {
+                return false;
+            }
         }
-        return false;
+        return true;
     }
 
     private Map<String,Integer> getNumberCounts(List<String> numbers) {
@@ -135,5 +160,15 @@ public class Poker {
                 cardKeys.add(cardKey);
             }
         }
+    }
+
+    private int getIndexOfRank(String rank) {
+        String[] ranksValue = {"2", "3", "4", "5", "6", "7", "8", "9", "1", "J", "Q", "K", "A"};
+        for (int i = 0; i < ranksValue.length; i++) {
+            if (rank.equals(ranksValue[i])) {
+                return i;
+            }
+        }
+        return -1;
     }
 }
